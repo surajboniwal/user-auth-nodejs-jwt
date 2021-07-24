@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken')
-const authConfig = require('./../config/auth.config')
 const ApiError = require('./../errors/api.error')
 
-exports.buildAccessToken = (email) => jwt.sign({ email: email }, authConfig.jwtSecret, { expiresIn: '24h' })
+exports.buildAccessToken = (email) => jwt.sign({ email: email }, process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' })
 
-exports.buildRefreshToken = (email) => jwt.sign({ email: email }, authConfig.refreshSecret)
+exports.buildRefreshToken = (email) => jwt.sign({ email: email }, process.env.JWT_REFRESH_SECRET)
 
 
 exports.verifyAccessToken = (req, res, next) => {
@@ -15,7 +14,7 @@ exports.verifyAccessToken = (req, res, next) => {
 
     let token = req.headers.authorization.split(' ')[1]
 
-    jwt.verify(token, authConfig.jwtSecret, (err, data) => {
+    jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, data) => {
         if (err) {
             return next(ApiError.unauthorized())
         }
@@ -33,7 +32,7 @@ exports.verifyRefreshToken = (req, res, next) => {
 
     let token = req.headers.authorization.split(' ')[1]
 
-    jwt.verify(token, authConfig.refreshSecret, (err, data) => {
+    jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, data) => {
         if (err) {
             return next(ApiError.unauthorized())
         }
