@@ -1,4 +1,7 @@
 module.exports = (error, req, res, next) => {
-    console.error(error);
-    return res.status(error.code || 500).json({ errors: [{ msg: error.msg || 'Something went wrong' }] })
+    console.log(error)
+    if (typeof (error.msg) == 'string') {
+        error.msg = [{ msg: error.msg }]
+    }
+    return res.status(error.code || 500).json({ errors: error.msg })
 }
